@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.23.0/min/vs/loader.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+    <title>My Own - Python</span> IDE 🐍</title>
+</head>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap');
+
+    * {
+        padding: 0;
+        margin: 0;
+    }
+
+    body {
+        width: 100vw;
+        height: 100vh;
+        background-color: #1e1e1efb;
+        font-family: 'Poppins', sans-serif;
+        display: grid;
+        grid-template-rows: 10% 1fr 40%;
+        color: white;
+    }
+
+    h1 {
+        color: #ffffff;
+    }
+
+    .credit-section {
+        padding: 10px;
+        background-color: #ffffff;
+        border-radius: 5px;
+        width: max-content;
+
+    }
+
+    .credit-section:hover {
+        box-shadow: 0px 0px 10px 0px #ffffff;
+    }
+
+
+    a {
+        text-decoration: none;
+        color: #1e1e1e;
+    }
+
+    .header-section {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .editor-section {
+        margin: 15px;
+        border: 2px solid #424242;
+    }
+
+    .output-section {
+        margin: 15px;
+    }
+
+    .button-area {
+        width: 75%;
+        display: flex;
+        justify-content: space-between;
+        margin-inline: 25px;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    h2 {
+        border: 2px solid #6d6d6d;
+        padding-inline: 15px;
+    }
+
+    #run {
+        background-color: #00D65C;
+        border: none;
+        border-radius: 100%;
+        padding: 10px 15px;
+        cursor: pointer;
+        color: #1e1e1e;
+        font-weight: bold;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    #run:hover {
+        box-shadow: 0px 0px 10px 0px #00D65C;
+        transform: scale(1.5);
+        /* Increase the scale on hover */
+    }
+
+    #output {
+        margin-inline: 25px;
+    }
+
+    #output {
+        margin-inline: 25px;
+        user-select: text;
+    }
+
+    .result-section {
+        border: 2px solid #424242;
+        height: 200px;
+        padding: 10px;
+        border-radius: 5px;
+        width: 70%;
+        overflow: scroll;
+        scroll-behavior: smooth;
+    }
+
+    .result-section::-webkit-scrollbar {
+        width: 0.5em;
+    }
+
+    .result-section::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    .result-section::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 4px;
+    }
+
+    .result-section:hover::-webkit-scrollbar {
+        width: 0.5em;
+    }
+
+    .result-wrapper {
+        display: flex;
+    }
+
+    #copyButton {
+        margin-inline-start: 50px;
+        width: 250px;
+        padding: 10px 15px;
+        cursor: pointer;
+    }
+
+    #copy-show {
+        margin-inline-start: 50px;
+        text-align: center;
+        width: 178px;
+        padding: 35px;
+        border: 2px solid #424242;
+        margin-top: 25px;
+        visibility: hidden;
+    }
+
+    .no-scrollbar {
+        overflow: hidden;
+    }
+
+
+    @media screen and (max-width: 600px) {
+        .header-section {
+            font-size: 8px;
+        }
+
+        #copyButton {
+            width: max-content;
+        }
+
+        .result-section {
+            width: 70%;
+        }
+
+        #copy-show {
+            width: max-content;
+            padding: 5px;
+        }
+
+    }
+</style>
+
+<body>
+    <div class="header-section">
+        <h1>Online <span style="color: #00D65C;">Python</span> IDE 🐍</h1>
+        <div class="credit-section">
+            <a href="https://www.linkedin.com/in/shivam-sah/">Developed by Shivam</a>
+        </div>
+    </div>
+
+    <div class="editor-section">
+        <div id="editor" style="height: 400px;" rows="10" cols="80"></div>
+    </div>
+    <div class="output-section">
+        <div class="button-area">
+            <h2>Output:</h2>
+            <button id="run" title="Run Code">▶</button>
+        </div>
+
+        <div class="result-wrapper">
+            <div class="result-section">
+                <pre id="output"></pre>
+            </div>
+            <div class="result-btn-section">
+                <button id="copyButton" title="Copy Output"><i class="fa-solid fa-copy"></i> Copy Output</button>
+                <div id="copy-show">Copied</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // Function to change innerHTML based on the media query
+        function changeContent() {
+            const element = document.getElementById('copyButton');
+
+            if (window.matchMedia("(max-width: 600px)").matches) {
+                element.innerHTML = '<i class="fa-solid fa-copy"></i>';
+            } else {
+                element.innerHTML = '<i class="fa-solid fa-copy"></i> Copy Output';
+            }
+        }
+
+        // Call the function initially and attach it to window resize events
+        changeContent();
+        window.addEventListener("resize", changeContent);
+
+
+        // Function to copy text to the clipboard
+        function copyToClipboard() {
+            const outputElement = document.getElementById("output");
+            const textToCopy = outputElement.textContent;
+
+            // Hide the scrollbar by applying a class
+            outputElement.classList.add("no-scrollbar");
+
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+
+            // Remove the class to restore the scrollbar
+            outputElement.classList.remove("no-scrollbar");
+
+            // Provide visual feedback to the user (optional)
+            const copyshow = document.getElementById("copy-show");
+            copyshow.style.visibility = "visible";
+            setTimeout(() => {
+                copyshow.style.visibility = "hidden";
+            }, 1500);
+        }
+
+        // Add a click event listener to the copy button
+        document.getElementById("copyButton").addEventListener("click", copyToClipboard);
+
+
+    </script>
+
+    <script>
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.23.0/min/vs' } });
+
+        require(['vs/editor/editor.main'], function () {
+            const editor = monaco.editor.create(document.getElementById('editor'), {
+                value: '',
+                language: 'python',
+                theme: 'vs-dark',
+            });
+
+            document.getElementById("run").addEventListener("click", function () {
+                const code = editor.getValue();
+                fetch("/run", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ code: code }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById("output").textContent = data.output;
+                    });
+            });
+        });
+    </script>
+</body>
+
+</html>
