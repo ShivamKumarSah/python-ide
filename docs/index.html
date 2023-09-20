@@ -271,6 +271,7 @@
 
             document.getElementById("run").addEventListener("click", function () {
                 const code = editor.getValue();
+
                 fetch("/run", {
                     method: "POST",
                     headers: {
@@ -278,11 +279,26 @@
                     },
                     body: JSON.stringify({ code: code }),
                 })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (response.ok) {
+                            // If the response status is OK (200), parse the JSON response
+                            return response.json();
+                        } else {
+                            // If the response status is not OK, handle the error (e.g., display an error message)
+                            throw new Error("Request failed with status " + response.status);
+                        }
+                    })
                     .then(data => {
+                        // Handle the JSON response here (data.output)
                         document.getElementById("output").textContent = data.output;
+                    })
+                    .catch(error => {
+                        // Handle errors, e.g., display an error message
+                        console.error(error);
+                        document.getElementById("output").textContent = "An error occurred.";
                     });
             });
+
         });
     </script>
 </body>
